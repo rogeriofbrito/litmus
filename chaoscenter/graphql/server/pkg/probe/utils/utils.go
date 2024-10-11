@@ -349,7 +349,10 @@ func GenerateProbeManifest(probe *model.Probe, mode model.Mode) (string, error) 
 
 		if probe.KubernetesCMDProperties.Source != nil {
 			var source v1alpha1.SourceDetails
-			_ = json.Unmarshal([]byte(*probe.KubernetesCMDProperties.Source), &source)
+			err := json.Unmarshal([]byte(*probe.KubernetesCMDProperties.Source), &source)
+			if err != nil {
+				log.Warnf("error unmarshalling soruce: %s - the source part of the probe is being ignored", err.Error())
+			}
 			_probe.CmdProbeInputs.Source = &source
 		}
 
